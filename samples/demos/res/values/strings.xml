@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FastTimePickerDemo</string>
+    <string name="sectionDescriptorStandard">Android TimePicker</string>
+    <string name="android_time_picker">Android Time Picker</string>
+    <string name="fast_time_picker">Fast Time Picker</string>
+    <string name="placeholder">Ipsum...</string>
+    <string name="fragment">Fragment</string>
+    <string name="dialog">Dialog</string>
+</resources>
