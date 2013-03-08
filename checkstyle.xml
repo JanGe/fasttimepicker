@@ -15,7 +15,7 @@
     </module>
 
     <module name="TreeWalker">
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+        <property name="cacheFile" value="target/cachefile"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -84,7 +84,7 @@
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <!--module name="AvoidInlineConditionals"/-->
-        <module name="DoubleCheckedLocking"/>
+        <!--module name="DoubleCheckedLocking"/-->
         <!--module name="EmptyStatement"/-->
         <!--module name="EqualsHashCode"/-->
         <!--module name="HiddenField"/-->
