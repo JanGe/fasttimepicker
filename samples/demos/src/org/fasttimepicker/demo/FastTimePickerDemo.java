@@ -2,7 +2,13 @@ package org.fasttimepicker.demo;
 
 import java.util.Calendar;
 
+import org.fasttimepicker.Alarm;
+import org.fasttimepicker.AlarmTimePickerDialogFragment;
+
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
@@ -72,8 +78,18 @@ public class FastTimePickerDemo extends Activity implements OnClickListener {
 	}
 
 	private void showFastTimePickerDialog() {
-		// TODO Auto-generated method stub
-		
+		final FragmentManager manager = getFragmentManager();
+        final FragmentTransaction ft = manager.beginTransaction();
+        final Fragment prev = manager.findFragmentByTag("time_dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        Alarm alarm = new Alarm();
+        final AlarmTimePickerDialogFragment fragment = AlarmTimePickerDialogFragment.newInstance(
+                alarm);
+        fragment.show(ft, "time_dialog");
 	}
 
 	private void showAndroidTimePickerDialog() {
