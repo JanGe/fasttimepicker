@@ -3,7 +3,9 @@
     android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_sides"
+    android:paddingRight="@dimen/padding_sides" >
 
     <TextView
         android:id="@+android:id/title"
@@ -12,7 +14,7 @@
 
     <LinearLayout
         android:id="@+id/androidFragment"
-        android:background="@drawable/clickable_list_element_background"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
@@ -41,7 +43,7 @@
 
     <LinearLayout
         android:id="@+id/androidDialog"
-        android:background="@drawable/clickable_list_element_background"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
@@ -73,7 +75,7 @@
 
     <LinearLayout
         android:id="@+id/fastFragment"
-        android:background="@drawable/clickable_list_element_background"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
@@ -102,7 +104,7 @@
 
     <LinearLayout
         android:id="@+id/fastDialog"
-        android:background="@drawable/clickable_list_element_background"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
