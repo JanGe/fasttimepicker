@@ -16,8 +16,6 @@
 
 package org.fasttimepicker;
 
-import org.fasttimepicker.R;
-
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -31,15 +29,15 @@ import android.widget.Button;
  */
 public class AlarmTimePickerDialogFragment extends DialogFragment {
 
-    private static final String KEY_ALARM = "alarm";
+    private static final String KEY_TIME = "time";
 
     private Button mSet, mCancel;
     private TimePicker mPicker;
 
-    public static AlarmTimePickerDialogFragment newInstance(Alarm alarm) {
+    public static AlarmTimePickerDialogFragment newInstance(ParcelableTime time) {
         final AlarmTimePickerDialogFragment frag = new AlarmTimePickerDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_ALARM, alarm);
+        args.putParcelable(KEY_TIME, time);
         frag.setArguments(args);
         return frag;
     }
@@ -58,7 +56,7 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        final Alarm alarm = getArguments().getParcelable(KEY_ALARM);
+        final ParcelableTime time = getArguments().getParcelable(KEY_TIME);
 
         View v = inflater.inflate(R.layout.time_picker_dialog, null);
         mSet = (Button) v.findViewById(R.id.set_button);
@@ -75,13 +73,13 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final Activity activity = getActivity();
-                if (activity instanceof AlarmTimePickerDialogHandler) {
-                    final AlarmTimePickerDialogHandler act =
-                            (AlarmTimePickerDialogHandler) activity;
-                    act.onDialogTimeSet(alarm, mPicker.getHours(), mPicker.getMinutes());
+                if (activity instanceof OnTimeSetListener) {
+                    final OnTimeSetListener act =
+                            (OnTimeSetListener) activity;
+                    act.onTimeSet(mPicker, mPicker.getHours(), mPicker.getMinutes());
                 } else {
                     Log.e("Error! Activities that use AlarmTimePickerDialogFragment must implement "
-                            + "AlarmTimePickerDialogHandler");
+                            + "OnTimeSetListener");
                 }
                 dismiss();
             }
@@ -90,7 +88,17 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
         return v;
     }
 
-    interface AlarmTimePickerDialogHandler {
-        void onDialogTimeSet(Alarm alarm, int hourOfDay, int minute);
+    /**
+     * The callback interface used to indicate the user is done filling in
+     * the time (they clicked on the 'Set' button).
+     */
+    public interface OnTimeSetListener {
+
+        /**
+         * @param view The view associated with this listener.
+         * @param hourOfDay The hour that was set.
+         * @param minute The minute that was set.
+         */
+        void onTimeSet(TimePicker view, int hourOfDay, int minute);
     }
 }

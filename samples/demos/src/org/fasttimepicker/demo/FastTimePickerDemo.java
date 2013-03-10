@@ -2,8 +2,8 @@ package org.fasttimepicker.demo;
 
 import java.util.Calendar;
 
-import org.fasttimepicker.Alarm;
 import org.fasttimepicker.AlarmTimePickerDialogFragment;
+import org.fasttimepicker.ParcelableTime;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -19,7 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-public class FastTimePickerDemo extends Activity implements OnClickListener {
+public class FastTimePickerDemo extends Activity implements OnClickListener,
+        AlarmTimePickerDialogFragment.OnTimeSetListener {
 
     private final Calendar mAndroidFragmentTime = Calendar.getInstance();
     private final Calendar mAndroidDialogTime = Calendar.getInstance();
@@ -78,6 +79,7 @@ public class FastTimePickerDemo extends Activity implements OnClickListener {
     }
 
     private void showFastTimePickerDialog() {
+
         final FragmentManager manager = getFragmentManager();
         final FragmentTransaction ft = manager.beginTransaction();
         final Fragment prev = manager.findFragmentByTag("time_dialog");
@@ -86,9 +88,9 @@ public class FastTimePickerDemo extends Activity implements OnClickListener {
         }
         ft.addToBackStack(null);
 
-        Alarm alarm = new Alarm();
+        ParcelableTime time = new ParcelableTime();
         final AlarmTimePickerDialogFragment fragment =
-                AlarmTimePickerDialogFragment.newInstance(alarm);
+                AlarmTimePickerDialogFragment.newInstance(time);
         fragment.show(ft, "time_dialog");
     }
 
@@ -117,5 +119,14 @@ public class FastTimePickerDemo extends Activity implements OnClickListener {
     private void onTimeSelect(LinearLayout layout, Calendar time) {
         TextView tv = ((TextView) layout.findViewById(android.R.id.text2));
         tv.setText(DateFormat.getTimeFormat(this).format(time.getTime()));
+    }
+
+    @Override
+    public void onTimeSet(org.fasttimepicker.TimePicker view, int hourOfDay,
+            int minute) {
+        mFastDialogTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        mFastDialogTime.set(Calendar.MINUTE, minute);
+
+        onTimeSelect(mFastDialog, mFastDialogTime);
     }
 }

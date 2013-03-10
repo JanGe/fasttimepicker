@@ -18,12 +18,11 @@ package org.fasttimepicker;
 
 import java.text.DateFormatSymbols;
 
-import org.fasttimepicker.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +36,7 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
     private final String mNoAmPmLabel;
     private int mAmPmState;
     private Button mSetButton;
-    private final boolean mIs24HoursMode = Alarms.get24HourMode(mContext);
+    private final boolean mIs24HoursMode = DateFormat.is24HourFormat(mContext);
 
     private static final int AMPM_NOT_SELECTED = 0;
     private static final int PM_SELECTED = 1;
