@@ -7,4 +7,6 @@
     <string name="placeholder">Ipsum...</string>
     <string name="fragment">Fragment</string>
     <string name="dialog">Dialog</string>
+    <string name="theme">Theme</string>
+    <string name="select_theme">Select a theme</string>
 </resources>

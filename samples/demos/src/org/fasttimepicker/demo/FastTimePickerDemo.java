@@ -11,16 +11,23 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class FastTimePickerDemo extends Activity implements OnClickListener,
         AlarmTimePickerDialogFragment.OnTimeSetListener {
+    
+    private static Themes sTheme = Themes.DEFAULT;
 
     private final Calendar mAndroidFragmentTime = Calendar.getInstance();
     private final Calendar mAndroidDialogTime = Calendar.getInstance();
@@ -32,13 +39,52 @@ public class FastTimePickerDemo extends Activity implements OnClickListener,
     private LinearLayout mFastFragment;
     private LinearLayout mFastDialog;
 
+    private Spinner mThemeSpinner;
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        setTheme(sTheme.getId());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        mThemeSpinner = (Spinner) findViewById(R.id.spinner);
+
+        ArrayAdapter<Themes> adapter =
+                new ArrayAdapter<Themes>(this,
+                        android.R.layout.simple_list_item_1, Themes.values()) {
+                };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mThemeSpinner.setAdapter(adapter);
+        mThemeSpinner.setSelection(sTheme.getPosition());
+
+        mThemeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                    int position, long id) {
+                changeTheme(Themes.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                changeTheme(Themes.values()[0]);
+            }
+
+            private void changeTheme(Themes theme) {
+                if (sTheme != theme) {
+                    sTheme = theme;
+                    
+                    Activity activity = FastTimePickerDemo.this;
+                    activity.startActivity(new Intent(
+                            activity, activity.getClass()));
+                    activity.finish();
+                }
+            }
+
+        });
 
         mAndroidFragment = (LinearLayout) findViewById(R.id.androidFragment);
         mAndroidDialog = (LinearLayout) findViewById(R.id.androidDialog);
@@ -57,7 +103,7 @@ public class FastTimePickerDemo extends Activity implements OnClickListener,
     }
 
     @Override
-    public final void onClick(final View v) {
+    public void onClick(final View v) {
 
         switch (v.getId()) {
         case R.id.androidFragment:
@@ -110,15 +156,19 @@ public class FastTimePickerDemo extends Activity implements OnClickListener,
 
         int hourOfDay = mAndroidDialogTime.get(Calendar.HOUR_OF_DAY);
         int minute = mAndroidDialogTime.get(Calendar.MINUTE);
+
         TimePickerDialog picker =
-                new TimePickerDialog(FastTimePickerDemo.this, listener,
-                        hourOfDay, minute, true);
+                new TimePickerDialog(FastTimePickerDemo.this, sTheme.getId(),
+                        listener, hourOfDay, minute, true);
         picker.show();
     }
 
     private void onTimeSelect(LinearLayout layout, Calendar time) {
         TextView tv = ((TextView) layout.findViewById(android.R.id.text2));
-        tv.setText(DateFormat.getTimeFormat(this).format(time.getTime()));
+
+        String timeString =
+                DateFormat.getTimeFormat(this).format(time.getTime());
+        tv.setText(timeString);
     }
 
     @Override
