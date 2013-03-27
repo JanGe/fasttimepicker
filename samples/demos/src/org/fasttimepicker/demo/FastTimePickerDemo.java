@@ -1,45 +1,43 @@
 package org.fasttimepicker.demo;
 
 import java.util.Calendar;
+import java.util.Locale;
 
-import org.fasttimepicker.AlarmTimePickerDialogFragment;
+import org.fasttimepicker.FastTimePicker;
+import org.fasttimepicker.FastTimePickerDialogFragment;
 import org.fasttimepicker.ParcelableTime;
+import org.fasttimepicker.demo.ViewSelectorFragment.TimePickers;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
-public class FastTimePickerDemo extends Activity implements OnClickListener,
-        AlarmTimePickerDialogFragment.OnTimeSetListener {
-    
+/**
+ * Demo application for FastTimePicker
+ * 
+ * Demo application to showcase a numpad-style faster time picker in comparision
+ * to the standard Android time picker
+ * 
+ * @author Jan Gerlinger
+ * 
+ */
+public class FastTimePickerDemo extends FragmentActivity implements
+        ViewSelectorFragment.OnThemeSelectedListener,
+        ViewSelectorFragment.OnStartTimePickerListener,
+        FastTimePickerDialogFragment.OnTimeSetListener {
+
+    /**
+     * Static to be preserved when this activity is restarted with another theme
+     */
     private static Themes sTheme = Themes.DEFAULT;
-
-    private final Calendar mAndroidFragmentTime = Calendar.getInstance();
-    private final Calendar mAndroidDialogTime = Calendar.getInstance();
-    private final Calendar mFastFragmentTime = Calendar.getInstance();
-    private final Calendar mFastDialogTime = Calendar.getInstance();
-
-    private LinearLayout mAndroidFragment;
-    private LinearLayout mAndroidDialog;
-    private LinearLayout mFastFragment;
-    private LinearLayout mFastDialog;
-
-    private Spinner mThemeSpinner;
+    private static Boolean sIs24HoursMode = null;
 
     /**
      * Called when the activity is first created.
@@ -47,86 +45,61 @@ public class FastTimePickerDemo extends Activity implements OnClickListener,
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         setTheme(sTheme.getId());
+        if (sIs24HoursMode == null)
+            sIs24HoursMode = DateFormat.is24HourFormat(this);
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.fragmentlayout);
+    }
 
-        mThemeSpinner = (Spinner) findViewById(R.id.spinner);
+    /**
+     * Returns the currently selected theme that is used next time the activity
+     * is created
+     * 
+     * @return the currently selected theme
+     */
+    public Themes getCurrentlySelectedTheme() {
+        return sTheme;
+    }
 
-        ArrayAdapter<Themes> adapter =
-                new ArrayAdapter<Themes>(this,
-                        android.R.layout.simple_list_item_1, Themes.values()) {
-                };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mThemeSpinner.setAdapter(adapter);
-        mThemeSpinner.setSelection(sTheme.getPosition());
+    /**
+     * Sets the theme that is used the next time the activity is created
+     * 
+     * @param theme
+     *            used the next time the activity is created
+     */
+    @Override
+    public void onThemeSelected(Themes theme) {
+        if (sTheme != theme) {
+            sTheme = theme;
+            restartActivity();
+        }
+    }
 
-        mThemeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                    int position, long id) {
-                changeTheme(Themes.values()[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                changeTheme(Themes.values()[0]);
-            }
-
-            private void changeTheme(Themes theme) {
-                if (sTheme != theme) {
-                    sTheme = theme;
-                    
-                    Activity activity = FastTimePickerDemo.this;
-                    activity.startActivity(new Intent(
-                            activity, activity.getClass()));
-                    activity.finish();
-                }
-            }
-
-        });
-
-        mAndroidFragment = (LinearLayout) findViewById(R.id.androidFragment);
-        mAndroidDialog = (LinearLayout) findViewById(R.id.androidDialog);
-        mFastFragment = (LinearLayout) findViewById(R.id.fastFragment);
-        mFastDialog = (LinearLayout) findViewById(R.id.fastDialog);
-
-        mAndroidFragment.setOnClickListener(this);
-        mAndroidDialog.setOnClickListener(this);
-        mFastFragment.setOnClickListener(this);
-        mFastDialog.setOnClickListener(this);
-
-        onTimeSelect(mAndroidFragment, mAndroidFragmentTime);
-        onTimeSelect(mAndroidDialog, mAndroidDialogTime);
-        onTimeSelect(mFastFragment, mFastFragmentTime);
-        onTimeSelect(mFastDialog, mFastDialogTime);
+    private void restartActivity() {
+        startActivity(new Intent(this, this.getClass()));
+        finish();
     }
 
     @Override
-    public void onClick(final View v) {
-
-        switch (v.getId()) {
-        case R.id.androidFragment:
-
+    public void onStartTimePicker(TimePickers picker) {
+        switch (picker) {
+        case ANDROID_FRAGMENT:
             break;
-        case R.id.androidDialog:
+        case ANDROID_DIALOG:
             showAndroidTimePickerDialog();
             break;
-        case R.id.fastFragment:
-
+        case FAST_FRAGMENT:
             break;
-        case R.id.fastDialog:
+        case FAST_DIALOG:
             showFastTimePickerDialog();
             break;
-
-        default:
         }
-
     }
 
     private void showFastTimePickerDialog() {
 
-        final FragmentManager manager = getFragmentManager();
+        final FragmentManager manager = getSupportFragmentManager();
         final FragmentTransaction ft = manager.beginTransaction();
         final Fragment prev = manager.findFragmentByTag("time_dialog");
         if (prev != null) {
@@ -135,48 +108,41 @@ public class FastTimePickerDemo extends Activity implements OnClickListener,
         ft.addToBackStack(null);
 
         ParcelableTime time = new ParcelableTime();
-        final AlarmTimePickerDialogFragment fragment =
-                AlarmTimePickerDialogFragment.newInstance(time);
+        final FastTimePickerDialogFragment fragment =
+                FastTimePickerDialogFragment.newInstance(time);
         fragment.show(ft, "time_dialog");
+        fragment.set24HoursMode(sIs24HoursMode);
     }
 
     private void showAndroidTimePickerDialog() {
+
+        final TimePickers picker = TimePickers.ANDROID_DIALOG;
 
         OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(final TimePicker view, final int hourOfDay,
                     final int minute) {
 
-                mAndroidDialogTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                mAndroidDialogTime.set(Calendar.MINUTE, minute);
-
-                onTimeSelect(mAndroidDialog, mAndroidDialogTime);
+                picker.setTime(hourOfDay, minute);
             }
         };
 
-        int hourOfDay = mAndroidDialogTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mAndroidDialogTime.get(Calendar.MINUTE);
+        int hourOfDay = picker.getCalendar().get(Calendar.HOUR_OF_DAY);
+        int minute = picker.getCalendar().get(Calendar.MINUTE);
 
-        TimePickerDialog picker =
-                new TimePickerDialog(FastTimePickerDemo.this, sTheme.getId(),
-                        listener, hourOfDay, minute, true);
-        picker.show();
-    }
-
-    private void onTimeSelect(LinearLayout layout, Calendar time) {
-        TextView tv = ((TextView) layout.findViewById(android.R.id.text2));
-
-        String timeString =
-                DateFormat.getTimeFormat(this).format(time.getTime());
-        tv.setText(timeString);
+        TimePickerDialog dialog =
+                new TimePickerDialog(this, listener, hourOfDay, minute,
+                        sIs24HoursMode);
+        dialog.show();
     }
 
     @Override
-    public void onTimeSet(org.fasttimepicker.TimePicker view, int hourOfDay,
-            int minute) {
-        mFastDialogTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mFastDialogTime.set(Calendar.MINUTE, minute);
+    public void on24HourModeChanged(boolean is24HoursMode) {
+        sIs24HoursMode = is24HoursMode;
+    }
 
-        onTimeSelect(mFastDialog, mFastDialogTime);
+    @Override
+    public void onTimeSet(FastTimePicker view, int hourOfDay, int minute) {
+        TimePickers.FAST_DIALOG.setTime(hourOfDay, minute);
     }
 }

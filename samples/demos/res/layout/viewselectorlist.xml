@@ -7,11 +7,24 @@
     android:paddingLeft="@dimen/padding_sides"
     android:paddingRight="@dimen/padding_sides" >
 
+    <TextView
+        android:id="@+id/themeDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
+        android:layout_marginTop="8dip"
+        android:text="@string/select_theme"
+        android:textAppearance="?android:attr/textAppearanceListItem" />
+
+    <View style="@style/Divider" />
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:prompt="@string/select_theme" />
+
+    <include layout="@layout/twentyfourhourcheckbox" />
 
     <TextView
         android:id="@+android:id/title"
@@ -20,9 +33,9 @@
 
     <LinearLayout
         android:id="@+id/androidFragment"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="vertical" >
 
@@ -49,9 +62,9 @@
 
     <LinearLayout
         android:id="@+id/androidDialog"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="vertical" >
 
@@ -81,9 +94,9 @@
 
     <LinearLayout
         android:id="@+id/fastFragment"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="vertical" >
 
@@ -110,9 +123,9 @@
 
     <LinearLayout
         android:id="@+id/fastDialog"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="vertical" >
 

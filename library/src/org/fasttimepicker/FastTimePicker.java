@@ -28,15 +28,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-public class TimePicker extends TimerSetupView implements Button.OnClickListener{
+public class FastTimePicker extends TimerSetupView implements
+        Button.OnClickListener {
 
     private TextView mAmPmLabel;
     private String[] mAmpm;
     private final String mNoAmPmLabel;
     private int mAmPmState;
     private Button mSetButton;
-    private final boolean mIs24HoursMode = DateFormat.is24HourFormat(mContext);
+    private boolean mIs24HoursMode;
 
     private static final int AMPM_NOT_SELECTED = 0;
     private static final int PM_SELECTED = 1;
@@ -45,17 +45,23 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
 
     private static final String TIME_PICKER_SAVED_BUFFER_POINTER =
             "timer_picker_saved_buffer_pointer";
-    private static final String TIME_PICKER_SAVED_INPUT = "timer_picker_saved_input";
-    private static final String TIME_PICKER_SAVED_AMPM = "timer_picker_saved_ampm";
+    private static final String TIME_PICKER_SAVED_INPUT =
+            "timer_picker_saved_input";
+    private static final String TIME_PICKER_SAVED_AMPM =
+            "timer_picker_saved_ampm";
 
-    public TimePicker(Context context) {
+    public FastTimePicker(Context context) {
         this(context, null);
     }
 
-    public TimePicker(Context context, AttributeSet attrs) {
+    public FastTimePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         mInputSize = 4;
-        mNoAmPmLabel = context.getResources().getString(R.string.time_picker_ampm_label);
+        mNoAmPmLabel =
+                context.getResources().getString(
+                        R.string.time_picker_ampm_label);
+        mIs24HoursMode =
+                isInEditMode() ? false : DateFormat.is24HourFormat(mContext);
     }
 
     @Override
@@ -67,22 +73,21 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
     protected void onFinishInflate() {
         super.onFinishInflate();
         Resources res = mContext.getResources();
-        mAmpm = new DateFormatSymbols().getAmPmStrings();
 
         if (mIs24HoursMode) {
             mLeft.setText(res.getString(R.string.time_picker_00_label));
             mRight.setText(res.getString(R.string.time_picker_30_label));
         } else {
+            mAmpm = new DateFormatSymbols().getAmPmStrings();
             mLeft.setText(mAmpm[0]);
             mRight.setText(mAmpm[1]);
         }
         mLeft.setOnClickListener(this);
         mRight.setOnClickListener(this);
-        mAmPmLabel = (TextView)findViewById(R.id.ampm_label);
+        mAmPmLabel = (TextView) findViewById(R.id.ampm_label);
         mAmPmState = AMPM_NOT_SELECTED;
         updateKeypad();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -151,25 +156,30 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         // Put "-" in digits that was not entered by passing -1
         // Hide digit by passing -2 (for highest hours digit only);
 
-        int  hours1 = -1;
+        int hours1 = -1;
         int time = getEnteredTime();
-        // If the user entered 2 to 9 or 13 to 15 , there is no need for a 4th digit (AM/PM mode)
-        // If the user entered 3 to 9 or 24 to 25 , there is no need for a 4th digit (24 hours mode)
+        // If the user entered 2 to 9 or 13 to 15 , there is no need for a 4th
+        // digit (AM/PM mode)
+        // If the user entered 3 to 9 or 24 to 25 , there is no need for a 4th
+        // digit (24 hours mode)
         if (mInputPointer > -1) {
-            // Test to see if the highest digit is 2 to 9 for AM/PM or 3 to 9 for 24 hours mode
+            // Test to see if the highest digit is 2 to 9 for AM/PM or 3 to 9
+            // for 24 hours mode
             if (mInputPointer >= 0) {
                 int digit = mInput[mInputPointer];
-                if ((mIs24HoursMode && digit >= 3 && digit <= 9) ||
-                        (!mIs24HoursMode && digit >= 2 && digit <= 9)) {
+                if ((mIs24HoursMode && digit >= 3 && digit <= 9)
+                        || (!mIs24HoursMode && digit >= 2 && digit <= 9)) {
                     hours1 = -2;
                 }
             }
-            // Test to see if the 2 highest digits are 13 to 15 for AM/PM or 24 to 25 for 24 hours
+            // Test to see if the 2 highest digits are 13 to 15 for AM/PM or 24
+            // to 25 for 24 hours
             // mode
             if (mInputPointer > 0 && mInputPointer < 3 && hours1 != -2) {
-                int digits = mInput[mInputPointer] * 10 + mInput[mInputPointer - 1];
-                if ((mIs24HoursMode && digits >= 24 && digits <= 25) ||
-                        (!mIs24HoursMode && digits >= 13 && digits <= 15)) {
+                int digits =
+                        mInput[mInputPointer] * 10 + mInput[mInputPointer - 1];
+                if ((mIs24HoursMode && digits >= 24 && digits <= 25)
+                        || (!mIs24HoursMode && digits >= 13 && digits <= 15)) {
                     hours1 = -2;
                 }
             }
@@ -180,26 +190,26 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         } else {
             hours1 = -1;
         }
-        int hours2 = (mInputPointer < 2) ? -1 :  mInput[2];
-        int minutes1 = (mInputPointer < 1) ? -1 :  mInput[1];
-        int minutes2 = (mInputPointer < 0) ? -1 :  mInput[0];
+        int hours2 = (mInputPointer < 2) ? -1 : mInput[2];
+        int minutes1 = (mInputPointer < 1) ? -1 : mInput[1];
+        int minutes2 = (mInputPointer < 0) ? -1 : mInput[0];
         mEnteredTime.setTime(hours1, hours2, minutes1, minutes2, -1);
     }
 
     private void showAmPm() {
         if (!mIs24HoursMode) {
-            switch(mAmPmState) {
-                case AMPM_NOT_SELECTED:
-                    mAmPmLabel.setText(mNoAmPmLabel);
-                    break;
-                case AM_SELECTED:
-                    mAmPmLabel.setText(mAmpm[0]);
-                    break;
-                case PM_SELECTED:
-                    mAmPmLabel.setText(mAmpm[1]);
-                    break;
-                default:
-                    break;
+            switch (mAmPmState) {
+            case AMPM_NOT_SELECTED:
+                mAmPmLabel.setText(mNoAmPmLabel);
+                break;
+            case AM_SELECTED:
+                mAmPmLabel.setText(mAmpm[0]);
+                break;
+            case PM_SELECTED:
+                mAmPmLabel.setText(mAmpm[1]);
+                break;
+            default:
+                break;
             }
         } else {
             mAmPmLabel.setVisibility(View.INVISIBLE);
@@ -228,8 +238,8 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
             }
             mAmPmState = AM_SELECTED;
         } else if (canAddDigits()) {
-                addClickedNumber(0);
-                addClickedNumber(0);
+            addClickedNumber(0);
+            addClickedNumber(0);
         }
     }
 
@@ -252,17 +262,18 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         }
     }
 
-    // Checks if the user allowed to click on the left or right button that enters "00" or "30"
+    // Checks if the user allowed to click on the left or right button that
+    // enters "00" or "30"
     private boolean canAddDigits() {
         int time = getEnteredTime();
         // For AM/PM mode , can add "00" if an hour between 1 and 12 was entered
         if (!mIs24HoursMode) {
             return (time >= 1 && time <= 12);
         }
-        // For 24 hours mode , can add "00"/"30" if an hour between 0 and 23 was entered
+        // For 24 hours mode , can add "00"/"30" if an hour between 0 and 23 was
+        // entered
         return (time >= 0 && time <= 23 && mInputPointer > -1 && mInputPointer < 2);
     }
-
 
     // Enable/disable keys in the numeric key pad according to the data entered
     private void updateNumericKeys() {
@@ -271,7 +282,8 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
             if (mInputPointer >= 3) {
                 setKeyRange(-1);
             } else if (time == 0) {
-                if (mInputPointer == -1 || mInputPointer == 0 || mInputPointer == 2) {
+                if (mInputPointer == -1 || mInputPointer == 0
+                        || mInputPointer == 2) {
                     setKeyRange(9);
                 } else if (mInputPointer == 1) {
                     setKeyRange(5);
@@ -281,15 +293,15 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
             } else if (time == 1) {
                 if (mInputPointer == 0 || mInputPointer == 2) {
                     setKeyRange(9);
-                } else  if (mInputPointer == 1) {
+                } else if (mInputPointer == 1) {
                     setKeyRange(5);
                 } else {
                     setKeyRange(-1);
                 }
             } else if (time == 2) {
-                if (mInputPointer == 2|| mInputPointer == 1) {
+                if (mInputPointer == 2 || mInputPointer == 1) {
                     setKeyRange(9);
-                } else  if (mInputPointer == 0) {
+                } else if (mInputPointer == 0) {
                     setKeyRange(3);
                 } else {
                     setKeyRange(-1);
@@ -389,10 +401,11 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
                 setKeyRange(-1);
             } else if (time == 0) {
                 setKeyRange(9);
-                // If 0 was entered as the first digit in AM/PM mode, do not allow a second 0
-        //        if (mInputPointer == 0) {
-                    mNumbers[0].setEnabled(false);
-          //      }
+                // If 0 was entered as the first digit in AM/PM mode, do not
+                // allow a second 0
+                // if (mInputPointer == 0) {
+                mNumbers[0].setEnabled(false);
+                // }
             } else if (time <= 9) {
                 setKeyRange(5);
             } else if (time <= 95) {
@@ -413,13 +426,15 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         }
     }
 
-    // Returns the time already entered in decimal representation. if time is H1 H2 : M1 M2
+    // Returns the time already entered in decimal representation. if time is H1
+    // H2 : M1 M2
     // the value retured is H1*1000+H2*100+M1*10+M2
     private int getEnteredTime() {
-        return  mInput[3] * 1000 + mInput[2] * 100 + mInput[1] * 10 + mInput[0];
+        return mInput[3] * 1000 + mInput[2] * 100 + mInput[1] * 10 + mInput[0];
     }
 
-    // enables a range of numeric keys from zero to maxKey. The rest of the keys will be disabled
+    // enables a range of numeric keys from zero to maxKey. The rest of the keys
+    // will be disabled
     private void setKeyRange(int maxKey) {
         for (int i = 0; i < mNumbers.length; i++) {
             mNumbers[i].setEnabled(i <= maxKey);
@@ -433,8 +448,10 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
             mLeft.setEnabled(enable);
             mRight.setEnabled(enable);
         } else {
-            // You can use the AM/PM if time entered is 0 to 12 or it is 3 digits or more
-            if ((time > 12 && time < 100) || time == 0 || mAmPmState != AMPM_NOT_SELECTED) {
+            // You can use the AM/PM if time entered is 0 to 12 or it is 3
+            // digits or more
+            if ((time > 12 && time < 100) || time == 0
+                    || mAmPmState != AMPM_NOT_SELECTED) {
                 mLeft.setEnabled(false);
                 mRight.setEnabled(false);
             } else {
@@ -459,7 +476,8 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         // it is a legal time and the set key should be enabled.
         if (mIs24HoursMode) {
             int time = getEnteredTime();
-            mSetButton.setEnabled(mInputPointer >= 2 && (time < 60 || time > 95));
+            mSetButton.setEnabled(mInputPointer >= 2
+                    && (time < 60 || time > 95));
         } else {
             // If AM/PM mode , enable the set button if AM/PM was selected
             mSetButton.setEnabled(mAmPmState != AMPM_NOT_SELECTED);
@@ -475,24 +493,42 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         int hours = mInput[3] * 10 + mInput[2];
         if (hours == 12) {
             switch (mAmPmState) {
-                case PM_SELECTED:
-                    return 12;
-                case AM_SELECTED:
-                    return 0;
-                case HOURS24_MODE:
-                    return hours;
-                default:
-                    break;
+            case PM_SELECTED:
+                return 12;
+            case AM_SELECTED:
+                return 0;
+            case HOURS24_MODE:
+                return hours;
+            default:
+                break;
             }
         }
         return hours + (mAmPmState == PM_SELECTED ? 12 : 0);
     }
+
     public int getMinutes() {
         return mInput[1] * 10 + mInput[0];
     }
+    
+    public void set24HoursMode(boolean is24HoursMode) {
+        mIs24HoursMode = is24HoursMode;
+        
+        if (mIs24HoursMode) {
+            Resources res = mContext.getResources();
+            mLeft.setText(res.getString(R.string.time_picker_00_label));
+            mRight.setText(res.getString(R.string.time_picker_30_label));
+        } else {
+            mAmpm = new DateFormatSymbols().getAmPmStrings();
+            mLeft.setText(mAmpm[0]);
+            mRight.setText(mAmpm[1]);
+            mAmPmState = AMPM_NOT_SELECTED;
+            mAmPmLabel.setVisibility(View.VISIBLE);
+        }
+        updateKeypad();
+    }
 
     @Override
-    public Parcelable onSaveInstanceState () {
+    public Parcelable onSaveInstanceState() {
         final Parcelable parcel = super.onSaveInstanceState();
         final SavedState state = new SavedState(parcel);
         state.mInput = mInput;
@@ -502,7 +538,7 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
     }
 
     @Override
-    protected void onRestoreInstanceState (Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
@@ -519,6 +555,7 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         }
         mAmPmState = savedState.mAmPmState;
         updateKeypad();
+        invalidate();
     }
 
     private static class SavedState extends BaseSavedState {
@@ -533,6 +570,7 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
         private SavedState(Parcel in) {
             super(in);
             mInputPointer = in.readInt();
+            // TODO: Investigate, threw a NullPointerException once
             in.readIntArray(mInput);
             mAmPmState = in.readInt();
         }
@@ -545,15 +583,15 @@ public class TimePicker extends TimerSetupView implements Button.OnClickListener
             dest.writeInt(mAmPmState);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
 
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }

@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 
 
 public class TimerSetupView extends LinearLayout implements Button.OnClickListener,
-        Button.OnLongClickListener{
+        Button.OnLongClickListener {
 
     protected int mInputSize = 5;
 

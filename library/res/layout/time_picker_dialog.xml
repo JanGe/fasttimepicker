@@ -19,7 +19,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <org.fasttimepicker.TimePicker
+    <org.fasttimepicker.FastTimePicker
         android:id="@+id/time_picker"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -17,8 +17,9 @@
 package org.fasttimepicker;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +28,18 @@ import android.widget.Button;
 /**
  * Dialog to set alarm time.
  */
-public class AlarmTimePickerDialogFragment extends DialogFragment {
+public class FastTimePickerDialogFragment extends DialogFragment {
 
     private static final String KEY_TIME = "time";
 
     private Button mSet, mCancel;
-    private TimePicker mPicker;
+    private FastTimePicker mPicker;
 
-    public static AlarmTimePickerDialogFragment newInstance(ParcelableTime time) {
-        final AlarmTimePickerDialogFragment frag = new AlarmTimePickerDialogFragment();
+    private Boolean mIs24HoursMode = null;
+
+    public static FastTimePickerDialogFragment newInstance(ParcelableTime time) {
+        final FastTimePickerDialogFragment frag =
+                new FastTimePickerDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_TIME, time);
         frag.setArguments(args);
@@ -56,8 +60,6 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        final ParcelableTime time = getArguments().getParcelable(KEY_TIME);
-
         View v = inflater.inflate(R.layout.time_picker_dialog, null);
         mSet = (Button) v.findViewById(R.id.set_button);
         mCancel = (Button) v.findViewById(R.id.cancel_button);
@@ -67,18 +69,20 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
-        mPicker = (TimePicker) v.findViewById(R.id.time_picker);
+        mPicker = (FastTimePicker) v.findViewById(R.id.time_picker);
+        if (mIs24HoursMode != null)
+            mPicker.set24HoursMode(mIs24HoursMode);
         mPicker.setSetButton(mSet);
         mSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Activity activity = getActivity();
                 if (activity instanceof OnTimeSetListener) {
-                    final OnTimeSetListener act =
-                            (OnTimeSetListener) activity;
-                    act.onTimeSet(mPicker, mPicker.getHours(), mPicker.getMinutes());
+                    final OnTimeSetListener act = (OnTimeSetListener) activity;
+                    act.onTimeSet(mPicker, mPicker.getHours(),
+                            mPicker.getMinutes());
                 } else {
-                    Log.e("Error! Activities that use AlarmTimePickerDialogFragment must implement "
+                    Log.e("Error! Activities that use FastTimePickerDialogFragment must implement "
                             + "OnTimeSetListener");
                 }
                 dismiss();
@@ -89,16 +93,23 @@ public class AlarmTimePickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * The callback interface used to indicate the user is done filling in
-     * the time (they clicked on the 'Set' button).
+     * The callback interface used to indicate the user is done filling in the
+     * time (they clicked on the 'Set' button).
      */
     public interface OnTimeSetListener {
 
         /**
-         * @param view The view associated with this listener.
-         * @param hourOfDay The hour that was set.
-         * @param minute The minute that was set.
+         * @param view
+         *            The view associated with this listener.
+         * @param hourOfDay
+         *            The hour that was set.
+         * @param minute
+         *            The minute that was set.
          */
-        void onTimeSet(TimePicker view, int hourOfDay, int minute);
+        void onTimeSet(FastTimePicker view, int hourOfDay, int minute);
+    }
+
+    public void set24HoursMode(boolean is24HoursMode) {
+        mIs24HoursMode = is24HoursMode;
     }
 }
