@@ -16,32 +16,35 @@
 
 package org.fasttimepicker;
 
-import org.fasttimepicker.R;
 import org.fasttimepicker.timer.TimerView;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-
-public class TimerSetupView extends LinearLayout implements Button.OnClickListener,
-        Button.OnLongClickListener {
+public class TimerSetupView extends LinearLayout implements
+        Button.OnClickListener, Button.OnLongClickListener {
 
     protected int mInputSize = 5;
 
-    protected final Button mNumbers [] = new Button [10];
-    protected int mInput [] = new int [mInputSize];
+    protected final Button mNumbers[] = new Button[10];
+    protected int mInput[] = new int[mInputSize];
     protected int mInputPointer = -1;
     protected Button mLeft, mRight;
     protected Button mStart;
     protected ImageButton mDelete;
     protected TimerView mEnteredTime;
     protected final Context mContext;
+    private final int mPrimaryColor;
 
     public TimerSetupView(Context context) {
         this(context, null);
@@ -51,8 +54,13 @@ public class TimerSetupView extends LinearLayout implements Button.OnClickListen
         super(context, attrs);
         mContext = context;
         LayoutInflater layoutInflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                (LayoutInflater) context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(getLayoutId(), this);
+        
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue , true);
+        mPrimaryColor = getResources().getColor(typedValue.resourceId);
     }
 
     protected int getLayoutId() {
@@ -67,32 +75,35 @@ public class TimerSetupView extends LinearLayout implements Button.OnClickListen
         View v2 = findViewById(R.id.second);
         View v3 = findViewById(R.id.third);
         View v4 = findViewById(R.id.fourth);
-        mEnteredTime = (TimerView)findViewById(R.id.timer_time_text);
-        mDelete = (ImageButton)findViewById(R.id.delete);
+        mEnteredTime = (TimerView) findViewById(R.id.timer_time_text);
+        mDelete = (ImageButton) findViewById(R.id.delete);
         mDelete.setOnClickListener(this);
         mDelete.setOnLongClickListener(this);
 
-        mNumbers[1] = (Button)v1.findViewById(R.id.key_left);
-        mNumbers[2] = (Button)v1.findViewById(R.id.key_middle);
-        mNumbers[3] = (Button)v1.findViewById(R.id.key_right);
+        mDelete.setColorFilter(new PorterDuffColorFilter(mPrimaryColor,
+                PorterDuff.Mode.MULTIPLY));
 
-        mNumbers[4] = (Button)v2.findViewById(R.id.key_left);
-        mNumbers[5] = (Button)v2.findViewById(R.id.key_middle);
-        mNumbers[6] = (Button)v2.findViewById(R.id.key_right);
+        mNumbers[1] = (Button) v1.findViewById(R.id.key_left);
+        mNumbers[2] = (Button) v1.findViewById(R.id.key_middle);
+        mNumbers[3] = (Button) v1.findViewById(R.id.key_right);
 
-        mNumbers[7] = (Button)v3.findViewById(R.id.key_left);
-        mNumbers[8] = (Button)v3.findViewById(R.id.key_middle);
-        mNumbers[9] = (Button)v3.findViewById(R.id.key_right);
+        mNumbers[4] = (Button) v2.findViewById(R.id.key_left);
+        mNumbers[5] = (Button) v2.findViewById(R.id.key_middle);
+        mNumbers[6] = (Button) v2.findViewById(R.id.key_right);
 
-        mLeft = (Button)v4.findViewById(R.id.key_left);
-        mNumbers[0] = (Button)v4.findViewById(R.id.key_middle);
-        mRight = (Button)v4.findViewById(R.id.key_right);
+        mNumbers[7] = (Button) v3.findViewById(R.id.key_left);
+        mNumbers[8] = (Button) v3.findViewById(R.id.key_middle);
+        mNumbers[9] = (Button) v3.findViewById(R.id.key_right);
+
+        mLeft = (Button) v4.findViewById(R.id.key_left);
+        mNumbers[0] = (Button) v4.findViewById(R.id.key_middle);
+        mRight = (Button) v4.findViewById(R.id.key_right);
         setLeftRightEnabled(false);
 
         for (int i = 0; i < 10; i++) {
             mNumbers[i].setOnClickListener(this);
-            mNumbers [i].setText(String.format("%d",i));
-            mNumbers [i].setTag(R.id.numbers_key,new Integer(i));
+            mNumbers[i].setText(String.format("%d", i));
+            mNumbers[i].setTag(R.id.numbers_key, new Integer(i));
         }
         updateTime();
     }
@@ -133,10 +144,10 @@ public class TimerSetupView extends LinearLayout implements Button.OnClickListen
             }
             if (mInputPointer < mInputSize - 1) {
                 for (int i = mInputPointer; i >= 0; i--) {
-                    mInput[i+1] = mInput[i];
+                    mInput[i + 1] = mInput[i];
                 }
                 mInputPointer++;
-                mInput [0] = val;
+                mInput[0] = val;
                 updateTime();
             }
             return;
@@ -167,12 +178,12 @@ public class TimerSetupView extends LinearLayout implements Button.OnClickListen
     }
 
     protected void updateTime() {
-        mEnteredTime.setTime(-1, mInput[4], mInput[3], mInput[2],
-                mInput[1] * 10 + mInput[0]);
+        mEnteredTime.setTime(-1, mInput[4], mInput[3], mInput[2], mInput[1]
+                * 10 + mInput[0]);
     }
 
     public void reset() {
-        for (int i = 0; i < mInputSize; i ++) {
+        for (int i = 0; i < mInputSize; i++) {
             mInput[i] = 0;
         }
         mInputPointer = -1;
@@ -180,7 +191,8 @@ public class TimerSetupView extends LinearLayout implements Button.OnClickListen
     }
 
     public int getTime() {
-        return mInput[4] * 3600 + mInput[3] * 600 + mInput[2] * 60 + mInput[1] * 10 + mInput[0];
+        return mInput[4] * 3600 + mInput[3] * 600 + mInput[2] * 60 + mInput[1]
+                * 10 + mInput[0];
     }
 
     public void saveEntryState(Bundle outState, String key) {

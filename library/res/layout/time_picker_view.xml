@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:singleLine="true"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorTertiary" />
 
             <org.fasttimepicker.ZeroTopPaddingTextView
                 android:id="@+id/hours_ones"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:singleLine="true"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorTertiary" />
 
             <org.fasttimepicker.ZeroTopPaddingTextView
                 android:id="@+id/hours_seperator"
@@ -62,7 +62,7 @@
                 android:ellipsize="none"
                 android:singleLine="true"
                 android:text="@string/time_picker_time_seperator"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorPrimary" />
 
             <org.fasttimepicker.ZeroTopPaddingTextView
                 android:id="@+id/minutes_tens"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:singleLine="true"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorTertiary" />
 
             <org.fasttimepicker.ZeroTopPaddingTextView
                 android:id="@+id/minutes_ones"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:singleLine="true"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorTertiary" />
 
             <org.fasttimepicker.ZeroTopPaddingTextView
                 android:id="@+id/ampm_label"
@@ -91,7 +91,7 @@
                 android:gravity="top"
                 android:singleLine="true"
                 android:text="@string/time_picker_ampm_label"
-                android:textColor="@color/clock_white" />
+                android:textColor="?android:attr/textColorPrimary" />
         </org.fasttimepicker.timer.TimerView>
 
         <ImageButton
@@ -100,7 +100,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/item_background"
+            android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/timer_delete"
             android:gravity="center"
             android:src="@drawable/ic_backspace" />
@@ -109,7 +109,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="#28ffffff" />
+        android:background="?android:attr/listDivider" />
 
     <include
         android:id="@+id/first"

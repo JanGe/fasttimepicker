@@ -20,10 +20,12 @@ import java.text.DateFormatSymbols;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -509,10 +511,10 @@ public class FastTimePicker extends TimerSetupView implements
     public int getMinutes() {
         return mInput[1] * 10 + mInput[0];
     }
-    
+
     public void set24HoursMode(boolean is24HoursMode) {
         mIs24HoursMode = is24HoursMode;
-        
+
         if (mIs24HoursMode) {
             Resources res = mContext.getResources();
             mLeft.setText(res.getString(R.string.time_picker_00_label));

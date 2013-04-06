@@ -16,8 +16,6 @@
         android:text="@string/select_theme"
         android:textAppearance="?android:attr/textAppearanceListItem" />
 
-    <View style="@style/Divider" />
-
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
