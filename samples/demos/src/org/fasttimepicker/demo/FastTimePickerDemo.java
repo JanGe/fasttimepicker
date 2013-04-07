@@ -1,17 +1,17 @@
 package org.fasttimepicker.demo;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 import org.fasttimepicker.FastTimePicker;
 import org.fasttimepicker.FastTimePickerDialogFragment;
-import org.fasttimepicker.ParcelableTime;
 import org.fasttimepicker.demo.ViewSelectorFragment.TimePickers;
 
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -107,33 +107,25 @@ public class FastTimePickerDemo extends FragmentActivity implements
         }
         ft.addToBackStack(null);
 
-        ParcelableTime time = new ParcelableTime();
         final FastTimePickerDialogFragment fragment =
-                FastTimePickerDialogFragment.newInstance(time);
+                FastTimePickerDialogFragment.newInstance();
         fragment.show(ft, "time_dialog");
         fragment.set24HoursMode(sIs24HoursMode);
     }
 
     private void showAndroidTimePickerDialog() {
 
-        final TimePickers picker = TimePickers.ANDROID_DIALOG;
+        final FragmentManager manager = getSupportFragmentManager();
+        final FragmentTransaction ft = manager.beginTransaction();
+        final Fragment prev = manager.findFragmentByTag("time_dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
 
-        OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(final TimePicker view, final int hourOfDay,
-                    final int minute) {
-
-                picker.setTime(hourOfDay, minute);
-            }
-        };
-
-        int hourOfDay = picker.getCalendar().get(Calendar.HOUR_OF_DAY);
-        int minute = picker.getCalendar().get(Calendar.MINUTE);
-
-        TimePickerDialog dialog =
-                new TimePickerDialog(this, listener, hourOfDay, minute,
-                        sIs24HoursMode);
-        dialog.show();
+        final TimePickerDialogFragment fragment =
+                new TimePickerDialogFragment();
+        fragment.show(ft, "time_dialog");
     }
 
     @Override
@@ -144,5 +136,23 @@ public class FastTimePickerDemo extends FragmentActivity implements
     @Override
     public void onTimeSet(FastTimePicker view, int hourOfDay, int minute) {
         TimePickers.FAST_DIALOG.setTime(hourOfDay, minute);
+    }
+
+    public static class TimePickerDialogFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        final TimePickers picker = TimePickers.ANDROID_DIALOG;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            int hourOfDay = picker.getCalendar().get(Calendar.HOUR_OF_DAY);
+            int minute = picker.getCalendar().get(Calendar.MINUTE);
+
+            return new TimePickerDialog(getActivity(), this, hourOfDay, minute,
+                    sIs24HoursMode);
+        }
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            picker.setTime(hourOfDay, minute);
+        }
     }
 }

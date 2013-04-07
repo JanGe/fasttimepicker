@@ -19,7 +19,6 @@ package org.fasttimepicker;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +36,11 @@ public class FastTimePickerDialogFragment extends DialogFragment {
 
     private Boolean mIs24HoursMode = null;
 
-    public static FastTimePickerDialogFragment newInstance(ParcelableTime time) {
+    public static FastTimePickerDialogFragment newInstance() {
         final FastTimePickerDialogFragment frag =
                 new FastTimePickerDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_TIME, time);
+        args.putParcelable(KEY_TIME, new ParcelableTime());
         frag.setArguments(args);
         return frag;
     }
