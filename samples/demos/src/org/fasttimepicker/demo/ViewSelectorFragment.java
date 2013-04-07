@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.Layout;
 import android.text.format.DateFormat;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -25,12 +24,12 @@ import android.widget.TextView;
 /**
  * A fragment that lists different options to start a fast time picker or a
  * standard Android one
- * 
+ *
  * Parent activity must implement
  * {@link org.fasttimepicker.FastTimePickerDialogFragment.OnTimeSetListener}
- * 
+ *
  * @author Jan Gerlinger
- * 
+ *
  */
 public class ViewSelectorFragment extends Fragment implements OnClickListener {
 
@@ -227,9 +226,9 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
 
         /**
          * Gets called when a new theme is selected
-         * 
+         *
          * Implementers have to change the fragment theme to the selected one
-         * 
+         *
          * @param theme
          *            selected for displaying this fragment
          */
@@ -238,7 +237,7 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
         /**
          * Has to return the currently selected theme this fragment is displayed
          * in out of the pre-specified list
-         * 
+         *
          * @return the currently selected theme
          */
         public Themes getCurrentlySelectedTheme();

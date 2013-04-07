@@ -20,12 +20,12 @@ import android.widget.TimePicker;
 
 /**
  * Demo application for FastTimePicker
- * 
+ *
  * Demo application to showcase a numpad-style faster time picker in comparision
  * to the standard Android time picker
- * 
+ *
  * @author Jan Gerlinger
- * 
+ *
  */
 public class FastTimePickerDemo extends FragmentActivity implements
         ViewSelectorFragment.OnThemeSelectedListener,
@@ -54,7 +54,7 @@ public class FastTimePickerDemo extends FragmentActivity implements
     /**
      * Returns the currently selected theme that is used next time the activity
      * is created
-     * 
+     *
      * @return the currently selected theme
      */
     public Themes getCurrentlySelectedTheme() {
@@ -63,7 +63,7 @@ public class FastTimePickerDemo extends FragmentActivity implements
 
     /**
      * Sets the theme that is used the next time the activity is created
-     * 
+     *
      * @param theme
      *            used the next time the activity is created
      */

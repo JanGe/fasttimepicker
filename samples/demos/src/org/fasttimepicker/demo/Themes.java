@@ -18,11 +18,11 @@ public enum Themes {
     public int getPosition() {
         return mPosition;
     }
-    
+
     public int getId() {
         return mId;
     }
-    
+
     @Override
     public String toString() {
         return mName;

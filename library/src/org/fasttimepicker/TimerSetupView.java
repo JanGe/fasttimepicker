@@ -19,7 +19,6 @@ package org.fasttimepicker;
 import org.fasttimepicker.timer.TimerView;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -57,9 +56,10 @@ public class TimerSetupView extends LinearLayout implements
                 (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(getLayoutId(), this);
-        
+
         TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue , true);
+        context.getTheme().resolveAttribute(android.R.attr.textColorPrimary,
+                typedValue, true);
         mPrimaryColor = getResources().getColor(typedValue.resourceId);
     }
 
@@ -103,7 +103,7 @@ public class TimerSetupView extends LinearLayout implements
         for (int i = 0; i < 10; i++) {
             mNumbers[i].setOnClickListener(this);
             mNumbers[i].setText(String.format("%d", i));
-            mNumbers[i].setTag(R.id.numbers_key, new Integer(i));
+            mNumbers[i].setTag(R.id.numbers_key, Integer.valueOf(i));
         }
         updateTime();
     }

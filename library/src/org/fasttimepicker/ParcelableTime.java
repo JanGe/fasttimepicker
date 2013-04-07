@@ -11,7 +11,7 @@ public final class ParcelableTime implements Parcelable {
     // ////////////////////////////
     public static final Parcelable.Creator<ParcelableTime> CREATOR =
             new Parcelable.Creator<ParcelableTime>() {
-                public ParcelableTime createFromParcel(Parcel p) {                    
+                public ParcelableTime createFromParcel(Parcel p) {
                     Time time = new Time();
                     time.set(p.readLong());
                     return new ParcelableTime(time);
@@ -32,9 +32,9 @@ public final class ParcelableTime implements Parcelable {
     // ////////////////////////////
     // end Parcelable apis
     // ////////////////////////////
-    
+
     private Time time;
-    
+
     public ParcelableTime() {
         this(new Time());
     }
@@ -42,9 +42,9 @@ public final class ParcelableTime implements Parcelable {
     public ParcelableTime(Time time) {
         this.time = time;
     }
-    
+
     public final Time asTime() {
         return time;
     }
-    
+
 }

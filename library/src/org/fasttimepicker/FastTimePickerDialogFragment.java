@@ -31,7 +31,7 @@ import android.widget.Button;
 public class FastTimePickerDialogFragment extends DialogFragment {
 
     private static final String KEY_24_HOURS_MODE = "24_hours_mode";
-    
+
     private Button mSet, mCancel;
     private FastTimePicker mPicker;
 
@@ -59,7 +59,7 @@ public class FastTimePickerDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        
+
         if (mIs24HoursMode == null)
             mIs24HoursMode = (Boolean) getArguments().getSerializable(KEY_24_HOURS_MODE);
         if (mIs24HoursMode == null)

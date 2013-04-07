@@ -20,12 +20,10 @@ import java.text.DateFormatSymbols;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -45,13 +43,6 @@ public class FastTimePicker extends TimerSetupView implements
     private static final int PM_SELECTED = 1;
     private static final int AM_SELECTED = 2;
     private static final int HOURS24_MODE = 3;
-
-    private static final String TIME_PICKER_SAVED_BUFFER_POINTER =
-            "timer_picker_saved_buffer_pointer";
-    private static final String TIME_PICKER_SAVED_INPUT =
-            "timer_picker_saved_input";
-    private static final String TIME_PICKER_SAVED_AMPM =
-            "timer_picker_saved_ampm";
 
     public FastTimePicker(Context context) {
         this(context, null);
@@ -162,7 +153,6 @@ public class FastTimePicker extends TimerSetupView implements
         // Hide digit by passing -2 (for highest hours digit only);
 
         int hours1 = -1;
-        int time = getEnteredTime();
         // If the user entered 2 to 9 or 13 to 15 , there is no need for a 4th
         // digit (AM/PM mode)
         // If the user entered 3 to 9 or 24 to 25 , there is no need for a 4th
@@ -235,7 +225,6 @@ public class FastTimePicker extends TimerSetupView implements
     // Clicking on the bottom left button will add "00" to the time
     // In AM/PM mode is will also set the time to AM.
     private void onLeftClicked() {
-        int time = getEnteredTime();
         if (!mIs24HoursMode) {
             if (canAddDigits()) {
                 addClickedNumber(0);
@@ -252,7 +241,6 @@ public class FastTimePicker extends TimerSetupView implements
     // mode and "30" is 24 hours mode.
     // In AM/PM mode is will also set the time to PM.
     private void onRightClicked() {
-        int time = getEnteredTime();
         if (!mIs24HoursMode) {
             if (canAddDigits()) {
                 addClickedNumber(0);
@@ -590,6 +578,7 @@ public class FastTimePicker extends TimerSetupView implements
             dest.writeInt(mAmPmState);
         }
 
+        @SuppressWarnings("unused")
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
                     public SavedState createFromParcel(Parcel in) {

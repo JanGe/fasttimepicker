@@ -50,13 +50,15 @@ public class TimerView extends LinearLayout {
         } else {
             mAndroidClockMonoThin = Typeface.SANS_SERIF;
         }
-        
+
         TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue , true);
+        context.getTheme().resolveAttribute(android.R.attr.textColorPrimary,
+                typedValue, true);
         mPrimaryColor = getResources().getColor(typedValue.resourceId);
-        
+
         typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.textColorTertiary, typedValue , true);
+        context.getTheme().resolveAttribute(android.R.attr.textColorTertiary,
+                typedValue, true);
         mTertiaryColor = getResources().getColor(typedValue.resourceId);
     }
 
