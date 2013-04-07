@@ -19,6 +19,7 @@ package org.fasttimepicker;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +30,22 @@ import android.widget.Button;
  */
 public class FastTimePickerDialogFragment extends DialogFragment {
 
-    private static final String KEY_TIME = "time";
-
+    private static final String KEY_24_HOURS_MODE = "24_hours_mode";
+    
     private Button mSet, mCancel;
     private FastTimePicker mPicker;
 
     private Boolean mIs24HoursMode = null;
 
     public static FastTimePickerDialogFragment newInstance() {
-        final FastTimePickerDialogFragment frag =
-                new FastTimePickerDialogFragment();
+        return new FastTimePickerDialogFragment();
+    }
+
+    public static FastTimePickerDialogFragment newInstanceOverrideMode(
+            Boolean is24HoursMode) {
+        final FastTimePickerDialogFragment frag = newInstance();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_TIME, new ParcelableTime());
+        args.putSerializable(KEY_24_HOURS_MODE, is24HoursMode);
         frag.setArguments(args);
         return frag;
     }
@@ -54,6 +59,11 @@ public class FastTimePickerDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        
+        if (mIs24HoursMode == null)
+            mIs24HoursMode = (Boolean) getArguments().getSerializable(KEY_24_HOURS_MODE);
+        if (mIs24HoursMode == null)
+            mIs24HoursMode = DateFormat.is24HourFormat(getActivity());
     }
 
     @Override
@@ -69,8 +79,7 @@ public class FastTimePickerDialogFragment extends DialogFragment {
             }
         });
         mPicker = (FastTimePicker) v.findViewById(R.id.time_picker);
-        if (mIs24HoursMode != null)
-            mPicker.set24HoursMode(mIs24HoursMode);
+        mPicker.set24HoursMode(mIs24HoursMode);
         mPicker.setSetButton(mSet);
         mSet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,9 +115,5 @@ public class FastTimePickerDialogFragment extends DialogFragment {
          *            The minute that was set.
          */
         void onTimeSet(FastTimePicker view, int hourOfDay, int minute);
-    }
-
-    public void set24HoursMode(boolean is24HoursMode) {
-        mIs24HoursMode = is24HoursMode;
     }
 }

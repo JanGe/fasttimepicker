@@ -8,7 +8,6 @@ import org.fasttimepicker.demo.ViewSelectorFragment.TimePickers;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -108,9 +107,8 @@ public class FastTimePickerDemo extends FragmentActivity implements
         ft.addToBackStack(null);
 
         final FastTimePickerDialogFragment fragment =
-                FastTimePickerDialogFragment.newInstance();
+                FastTimePickerDialogFragment.newInstanceOverrideMode(sIs24HoursMode);
         fragment.show(ft, "time_dialog");
-        fragment.set24HoursMode(sIs24HoursMode);
     }
 
     private void showAndroidTimePickerDialog() {
