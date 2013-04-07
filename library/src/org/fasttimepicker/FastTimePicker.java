@@ -39,6 +39,7 @@ public class FastTimePicker extends TimerSetupView implements
     private int mAmPmState;
     private Button mSetButton;
     private boolean mIs24HoursMode;
+    private boolean mFinishedInflating = false;
 
     private static final int AMPM_NOT_SELECTED = 0;
     private static final int PM_SELECTED = 1;
@@ -89,6 +90,8 @@ public class FastTimePicker extends TimerSetupView implements
         mAmPmLabel = (TextView) findViewById(R.id.ampm_label);
         mAmPmState = AMPM_NOT_SELECTED;
         updateKeypad();
+
+        mFinishedInflating = true;
     }
 
     @Override
@@ -515,18 +518,20 @@ public class FastTimePicker extends TimerSetupView implements
     public void set24HoursMode(boolean is24HoursMode) {
         mIs24HoursMode = is24HoursMode;
 
-        if (mIs24HoursMode) {
-            Resources res = mContext.getResources();
-            mLeft.setText(res.getString(R.string.time_picker_00_label));
-            mRight.setText(res.getString(R.string.time_picker_30_label));
-        } else {
-            mAmpm = new DateFormatSymbols().getAmPmStrings();
-            mLeft.setText(mAmpm[0]);
-            mRight.setText(mAmpm[1]);
-            mAmPmState = AMPM_NOT_SELECTED;
-            mAmPmLabel.setVisibility(View.VISIBLE);
+        if (mFinishedInflating) {
+            if (mIs24HoursMode) {
+                Resources res = mContext.getResources();
+                mLeft.setText(res.getString(R.string.time_picker_00_label));
+                mRight.setText(res.getString(R.string.time_picker_30_label));
+            } else {
+                mAmpm = new DateFormatSymbols().getAmPmStrings();
+                mLeft.setText(mAmpm[0]);
+                mRight.setText(mAmpm[1]);
+                mAmPmState = AMPM_NOT_SELECTED;
+                mAmPmLabel.setVisibility(View.VISIBLE);
+            }
+            updateKeypad();
         }
-        updateKeypad();
     }
 
     @Override
