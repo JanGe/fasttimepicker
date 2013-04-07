@@ -12,4 +12,6 @@
     <string name="use_24_hour_format">24 hour format</string>
     <string name="use_24_hour_format_yes">13:00</string>
     <string name="use_24_hour_format_no">1:00 PM</string>
+    <string name="twenty_four_hour_time_format">HH:mm</string>
+    <string name="twelve_hour_time_format">h:mm a</string>
 </resources>

@@ -3,10 +3,10 @@ package org.fasttimepicker.demo;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.format.DateFormat;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,7 +119,7 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
                 (RelativeLayout) mView
                         .findViewById(R.id.twentyfourhourcheckbox);
         update24HourCheckBox(twentyFourHourLayout,
-                DateFormat.is24HourFormat(getActivity()));
+                mThemeListener.getCurrentlySelected24HourMode());
         twentyFourHourLayout.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -127,6 +127,9 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
                 CheckBox checkBox =
                         (CheckBox) v.findViewById(android.R.id.checkbox);
                 update24HourCheckBox(v, !checkBox.isChecked());
+
+                for (TimePickers picker : TimePickers.values())
+                    updateTimeShown(picker);
             }
 
         });
@@ -177,8 +180,7 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
         return mView;
     }
 
-    private void update24HourCheckBox(View layout,
-            boolean is24HourMode) {
+    private void update24HourCheckBox(View layout, boolean is24HourMode) {
         CheckBox checkBox =
                 (CheckBox) layout.findViewById(android.R.id.checkbox);
         checkBox.setChecked(is24HourMode);
@@ -217,8 +219,9 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
         TextView tv = ((TextView) layout.findViewById(android.R.id.text2));
 
         String timeString =
-                DateFormat.getTimeFormat(getActivity()).format(
-                        picker.getCalendar().getTime());
+                getTimeFormat(getActivity(),
+                        mThemeListener.getCurrentlySelected24HourMode())
+                        .format(picker.getCalendar().getTime());
         tv.setText(timeString);
     }
 
@@ -246,10 +249,40 @@ public class ViewSelectorFragment extends Fragment implements OnClickListener {
          * Gets called when the 24 hour mode is selected or unselected
          */
         public void on24HourModeChanged(boolean is24HourMode);
+
+        /**
+         * Has to return the currently selected 24 hour mode
+         *
+         * @return the currently selected theme
+         */
+        public boolean getCurrentlySelected24HourMode();
     }
 
     public interface OnStartTimePickerListener {
         public void onStartTimePicker(TimePickers picker);
+    }
+
+    /**
+     * Returns a {@link java.text.DateFormat} object that can format the time
+     * according to the current locale and the user's 12-/24-hour clock
+     * preference.
+     *
+     * @param context
+     *            the application context
+     * @return the {@link java.text.DateFormat} object that properly formats the
+     *         time.
+     */
+    public static java.text.DateFormat getTimeFormat(Context context,
+            boolean is24HoursMode) {
+        int res;
+
+        if (is24HoursMode) {
+            res = R.string.twenty_four_hour_time_format;
+        } else {
+            res = R.string.twelve_hour_time_format;
+        }
+
+        return new java.text.SimpleDateFormat(context.getString(res));
     }
 
 }

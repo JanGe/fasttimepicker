@@ -153,4 +153,9 @@ public class FastTimePickerDemo extends FragmentActivity implements
             picker.setTime(hourOfDay, minute);
         }
     }
+
+    @Override
+    public boolean getCurrentlySelected24HourMode() {
+        return sIs24HoursMode;
+    }
 }
